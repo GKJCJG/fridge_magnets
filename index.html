@@ -7,15 +7,17 @@
     <title>Fridge Magnets</title>
     <style>
         #holder {
-            height: 500px;
-            width: 500px;
-            border: 5px solid black;
+            height: 90vh;
+            width: 95vw;
+            margin: 25px;
+            border: 2px solid black;
             position: relative;
         }
 
         .mover {
             position: absolute;
             border: 2px solid grey;
+            padding: 2px;
             cursor: default;
             user-select: none;
         }
@@ -30,7 +32,9 @@
         }
 
         input {
-            margin-top: 10px;
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
             width: 250px;
         }
     </style>
@@ -39,8 +43,9 @@
 
     <div id= "holder">
         <div id = "trash">🗑</div>
+        <input id="newText">
     </div>
-    <input id="newText">
+    
     
     <script>
         const moveZone = document.getElementById("holder");
