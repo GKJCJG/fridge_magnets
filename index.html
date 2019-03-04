@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Fridge Magnets</title>
+    <style>
+        #holder {
+            height: 500px;
+            width: 500px;
+            border: 5px solid black;
+            position: relative;
+        }
+
+        .mover {
+            position: absolute;
+            border: 2px solid grey;
+            cursor: default;
+            user-select: none;
+        }
+
+        #trash {
+            position: absolute;
+            height: 50px;
+            width: 50px;
+            border: 2px solid red;
+            top: 0;
+            right: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div id= "holder">
+        <div id = "trash"></div>
+    </div>
+    <input id="newText">
+    
+    <script>
+        const moveZone = document.getElementById("holder");
+        currentMover = null;
+        moveZone.onmousedown = setNewMover;
+        window.onmouseup = releaseMover;
+        window.onkeydown = addText;
+        const trash = document.getElementById("trash");
+        const trashLeft = trash.offsetLeft,
+            trashTop = trash.offsetTop,
+            trashRight = trashLeft + trash.offsetWidth,
+            trashBottom = trashTop + trash.offsetHeight;
+        
+        function setNewMover (event) {
+            if (event.target.classList.contains("mover")) {
+                moveZone.onmousemove = dragDiv.bind(event.target);
+                currentMover = event.target;
+            }
+        }
+
+        function releaseMover (event) {
+            moveZone.onmousemove = null;
+            if (isInTrash(event.clientX, event.clientY)) {
+                currentMover.remove();
+                currentMover = null;
+            }
+        }
+
+        function isInTrash(xCoord, yCoord) {
+            if (xCoord >= trashLeft && xCoord <= trashRight && yCoord >= trashTop && yCoord <= trashBottom) return true;
+            return false;
+        }
+
+        function dragDiv (event) {
+            let left = parseInt(this.style.left.slice(0, -2)) || 0;
+            let top = parseInt(this.style.top.slice(0, -2)) || 0;
+            
+            if (left + event.movementX >= 0 && this.offsetWidth + left + event.movementX <= this.parentElement.clientWidth) this.style.left = (left + event.movementX) + "px";
+            if (top + event.movementY >= 0 && this.offsetHeight + top + event.movementY <= this.parentElement.clientHeight) this.style.top = (top + event.movementY) + "px";
+        }
+
+        function addText (event) {
+            if (event.key === "Enter")  {
+                newText = document.getElementById("newText");
+                addedText = newText.value;
+                if (addedText) {
+                    const newDiv = document.createElement("div");
+                    newDiv.className = "mover";
+                    newDiv.textContent = addedText;
+                    moveZone.append(newDiv);
+                    newText.value = "";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
