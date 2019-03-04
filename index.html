@@ -77,8 +77,6 @@
                 trashTop = trash.offsetTop,
                 trashRight = trashLeft + trash.offsetWidth,
                 trashBottom = trashTop + trash.offsetHeight;
-            console.log(xCoord, yCoord);
-            console.log(trashLeft, trashRight, trashTop, trashBottom);
             if (xCoord >= trashLeft && xCoord <= trashRight && yCoord >= trashTop && yCoord <= trashBottom) return true;
             return false;
         }
