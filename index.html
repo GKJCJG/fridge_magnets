@@ -53,11 +53,7 @@
         moveZone.onmousedown = setNewMover;
         window.onmouseup = releaseMover;
         window.onkeydown = addText;
-        const trash = document.getElementById("trash");
-        const trashLeft = trash.offsetLeft,
-            trashTop = trash.offsetTop,
-            trashRight = trashLeft + trash.offsetWidth,
-            trashBottom = trashTop + trash.offsetHeight;
+        
         
         function setNewMover (event) {
             if (event.target.classList.contains("mover")) {
@@ -75,6 +71,14 @@
         }
 
         function isInTrash(xCoord, yCoord) {
+            const trash = document.getElementById("trash");
+            const holder = document.getElementById("holder");
+            const trashLeft = trash.offsetLeft + holder.offsetLeft,
+                trashTop = trash.offsetTop,
+                trashRight = trashLeft + trash.offsetWidth,
+                trashBottom = trashTop + trash.offsetHeight;
+            console.log(xCoord, yCoord);
+            console.log(trashLeft, trashRight, trashTop, trashBottom);
             if (xCoord >= trashLeft && xCoord <= trashRight && yCoord >= trashTop && yCoord <= trashBottom) return true;
             return false;
         }
