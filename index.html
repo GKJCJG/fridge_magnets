@@ -4,8 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src = "./assets/html2canvas.min.js" type="text/javascript"></script>
     <title>Fridge Magnets</title>
     <style>
+        a {
+            display: inline-block;
+            margin: 15px 2.5vw;
+        }
+
         #holder {
             height: 90vh;
             width: 95vw;
@@ -46,7 +52,7 @@
         <div id = "trash">🗑</div>
         <input id="newText">
     </div>
-    
+    <a href="/" download = "fridge.png" id="download">Download this image!</a>
     
     <script>
         const moveZone = document.getElementById("holder");
@@ -101,6 +107,22 @@
                     moveZone.append(newDiv);
                     newText.value = "";
                 }
+            }
+        }
+
+        var readyForDownload = false;
+        var link = document.getElementById("download");
+        link.onclick = function (event) {
+            if (!readyForDownload) {
+                event.preventDefault();
+                html2canvas(document.getElementById("holder")).then((canvas) => {
+                    var imgURL = canvas.toDataURL("image/png");
+                    this.href = imgURL;
+                    readyForDownload = true;
+                    this.click();
+                });
+            } else {
+                readyForDownload = false;
             }
         }
     </script>
