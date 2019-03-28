@@ -138,8 +138,8 @@
         function populate (container) {
             currentMovers.forEach(oldDiv => {
                 oldDiv.remove();
-                oldDiv.style.left = (oldDiv.style.left.slice(0, -2) - container.style.left.slice(0, -2)) + "px";
-                oldDiv.style.top = (oldDiv.style.top.slice(0, -2) - container.style.top.slice(0, -2)) + "px";
+                oldDiv.style.left = (oldDiv.style.left.slice(0, -2) - container.style.left.slice(0, -2) - 1) + "px";
+                oldDiv.style.top = (oldDiv.style.top.slice(0, -2) - container.style.top.slice(0, -2) - 1) + "px";
                 container.appendChild(oldDiv);
             })
         }
@@ -154,8 +154,8 @@
             currentMovers.forEach(div => {
                 div.remove();
                 div.classList.remove("selected");
-                div.style.left = parseInt(div.style.left.slice(0, -2)) + parseInt(this.style.left.slice(0, -2)) + "px";
-                div.style.top = parseInt(div.style.top.slice(0, -2)) + parseInt(this.style.top.slice(0, -2)) + "px";
+                div.style.left = (parseInt(div.style.left.slice(0, -2)) + parseInt(this.style.left.slice(0, -2)) + 1) + "px";
+                div.style.top = (parseInt(div.style.top.slice(0, -2)) + parseInt(this.style.top.slice(0, -2)) + 1) + "px";
                 
                 moveZone.appendChild(div);
             });
