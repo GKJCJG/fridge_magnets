@@ -26,6 +26,7 @@
             border: 2px solid grey;
             padding: 2px;
             cursor: default;
+            box-sizing:border-box;
             user-select: none;
         }
 
@@ -44,6 +45,16 @@
             left: 10px;
             width: 250px;
         }
+
+        .container {
+            position: absolute;
+            border: 1px solid lightgreen;
+            box-sizing: content-box;
+        }
+
+        .selected {
+            background-color: lightgreen;
+        }
     </style>
 </head>
 <body>
@@ -56,14 +67,16 @@
     
     <script>
         const moveZone = document.getElementById("holder");
-        currentMover = null;
+        let currentMover = null, currentMovers = [];
         moveZone.onmousedown = setNewMover;
+        moveZone.onclick = addNewMover;
         window.onmouseup = releaseMover;
         window.onkeydown = addText;
+        window.onkeyup = buildContainer;
         
         
         function setNewMover (event) {
-            if (event.target.classList.contains("mover")) {
+            if (event.target.classList.contains("mover") && !event.ctrlKey) {
                 moveZone.onmousemove = dragDiv.bind(event.target);
                 currentMover = event.target;
             }
@@ -75,6 +88,80 @@
                 currentMover.remove();
                 currentMover = null;
             }
+        }
+
+        function addNewMover (event) {
+            if (event.ctrlKey && event.target.classList.contains("mover")) {
+                currentMovers.push(event.target)
+                event.target.classList.add("selected");
+            }
+        }
+
+        function buildContainer (event) {
+            if (event.key === "Control") {
+                const dimensions = findDimensions();
+                const moverHolder = makeHolder(dimensions);
+                populate(moverHolder);
+                moveZone.appendChild(moverHolder);
+            }
+        }
+
+        function findDimensions () {
+            let leftest=Infinity, rightest=-Infinity, highest=Infinity, lowest=-Infinity;
+                for (let i = 0; i < currentMovers.length; i++) {
+                    let examinee = currentMovers[i];
+                    let left = parseInt(examinee.style.left.slice(0, -2)),
+                        top = parseInt(examinee.style.top.slice(0, -2));
+                    let right = left + examinee.offsetWidth,
+                        bottom = top + examinee.offsetHeight;
+                    if (left < leftest) leftest = left;
+                    if (top < highest)  highest = top;
+                    if (right > rightest) rightest = right;
+                    if (bottom > lowest) lowest = bottom;
+                }
+            return {left: leftest, width: (rightest-leftest), top: highest, height: (lowest - highest)};
+        }
+
+        function makeHolder(boundaries) {
+            const moverHolder = document.createElement("div");
+            moverHolder.className = "container";
+            moverHolder.style.left = (boundaries.left - 1) + "px";
+            moverHolder.style.top = (boundaries.top - 1) + "px";
+            moverHolder.style.width = (boundaries.width + 1) + "px";
+            moverHolder.style.height = (boundaries.height + 1)  + "px";
+            moverHolder.onmousedown = setContainerMove;
+            moverHolder.onmouseup = breakDownHolder;
+
+            return moverHolder;
+        }
+
+        function populate (container) {
+            currentMovers.forEach(oldDiv => {
+                oldDiv.remove();
+                oldDiv.style.left = (oldDiv.style.left.slice(0, -2) - container.style.left.slice(0, -2)) + "px";
+                oldDiv.style.top = (oldDiv.style.top.slice(0, -2) - container.style.top.slice(0, -2)) + "px";
+                container.appendChild(oldDiv);
+            })
+        }
+
+        function setContainerMove (event) {
+                event.stopPropagation();
+                moveZone.onmousemove = dragDiv.bind(this);
+        }
+
+        function breakDownHolder () {
+            moveZone.onmousemove = null;
+            currentMovers.forEach(div => {
+                div.remove();
+                div.classList.remove("selected");
+                div.style.left = parseInt(div.style.left.slice(0, -2)) + parseInt(this.style.left.slice(0, -2)) + "px";
+                div.style.top = parseInt(div.style.top.slice(0, -2)) + parseInt(this.style.top.slice(0, -2)) + "px";
+                
+                moveZone.appendChild(div);
+            });
+            currentMovers = [];
+
+            this.remove();
         }
 
         function isInTrash(xCoord, yCoord) {
@@ -89,8 +176,8 @@
         }
 
         function dragDiv (event) {
-            let left = parseInt(this.style.left.slice(0, -2)) || 0;
-            let top = parseInt(this.style.top.slice(0, -2)) || 0;
+            let left = parseInt(this.style.left.slice(0, -2));
+            let top = parseInt(this.style.top.slice(0, -2));
             
             if (left + event.movementX >= 0 && this.offsetWidth + left + event.movementX <= this.parentElement.clientWidth) this.style.left = (left + event.movementX) + "px";
             if (top + event.movementY >= 0 && this.offsetHeight + top + event.movementY <= this.parentElement.clientHeight) this.style.top = (top + event.movementY) + "px";
@@ -104,6 +191,8 @@
                     const newDiv = document.createElement("div");
                     newDiv.className = "mover";
                     newDiv.textContent = addedText;
+                    newDiv.style.left = "5px";
+                    newDiv.style.top = "5px";
                     moveZone.append(newDiv);
                     newText.value = "";
                 }
