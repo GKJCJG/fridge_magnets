@@ -10,6 +10,10 @@ The app consists of a text entry field, a sandbox, and a trashcan. When text is 
 
 ![Screenshot of Fridge Magnets](./fridge_screen.jpg)
 
+### Dragging multiple boxes
+
+When the number of text boxes increases, it can be bothersome to move each box one by one. In order to move multiple boxes simultaneously, hold the Control key while clicking on each box to be moved. Release the control key, and drag anywhere in the green-bordered box to move all of the selected textboxes.
+
 ## To get it running
 
 The app consists of a single HTML page with a style tag in the header and a short JS script at the end of the body. Simply open the html file in a browser or click the link above to get the app running.
